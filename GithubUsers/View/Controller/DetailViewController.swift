@@ -34,7 +34,7 @@ class DetailViewController: UIViewController {
         viewModel = DetailViewModel()
         viewModel.getUserDetail(userName: userName)
         
-        //Binding ViewController with ViewModel
+        //Binding with view model
         viewModel.user.bind { [weak self] user in
             if user != nil {
                 self?.imgAvatar.load.request(with: user!.avatar_url!, onCompletion: { (image, error, operation) in
@@ -48,11 +48,29 @@ class DetailViewController: UIViewController {
                 self?.lblBio.text = user?.bio
                 self?.lblLogin.text = user?.login
                 self?.lblLocation.text = user?.location
-                self?.lblRole.text = user?.type
                 self?.lblBlog.text = user?.blog
+                self?.lblRole.text = user?.type
+                self?.updateRoleFrame()
             }
         }
     }
+    
+    func updateRoleFrame() {
+        //Add left & right margin
+        lblRole.text = "   " + lblRole.text! + "   "
+        
+        //Update new size to fit text content
+        let newSize = lblRole.intrinsicContentSize.width
+        lblRole.frame.size.width = newSize
+        
+        //Set background and corner radius
+        lblRole.textColor = UIColor.white
+        lblRole.backgroundColor = UIColor(red: 0.66, green: 0.40, blue: 0.79, alpha: 1.00)
+        lblRole.layer.masksToBounds = false
+        lblRole.layer.cornerRadius = lblRole.frame.height/2
+        lblRole.clipsToBounds = true
+    }
+    
     @IBAction func btnOnClose(_ sender: Any) {
         self.dismiss(animated: true, completion: nil)
     }

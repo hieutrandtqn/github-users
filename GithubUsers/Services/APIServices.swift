@@ -11,9 +11,11 @@ import Alamofire
 
 class APIService {
     let URL_GET_USERS = "https://api.github.com/users"
+    let PER_PAGE = 20
     
-    func getUsers(pageIndex: Int, completion:  @escaping ([UserModel]) -> ()) {
-        Alamofire.request(URL_GET_USERS, method: .get, parameters: nil, encoding: JSONEncoding.default, headers: [:]).responseJSON {
+    func getUsers(since: Int, completion:  @escaping ([UserModel]) -> ()) {
+        let params = ["since": since, "per_page": PER_PAGE]
+        Alamofire.request(URL_GET_USERS, method: .get, parameters: params, encoding: URLEncoding.default, headers: [:]).responseJSON {
             response in
             switch (response.result) {
             case .success:

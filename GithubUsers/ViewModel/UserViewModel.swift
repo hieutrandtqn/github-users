@@ -16,8 +16,8 @@ class UserViewModel: NSObject {
     override init() {
         api = APIService()
     }
-    func getUserData(page: Int) {
-        api.getUsers(pageIndex: page) { [weak self] result in
+    func getUserData(since: Int) {
+        api.getUsers(since: since) { [weak self] result in
             self?.users.value = result
         }
     }

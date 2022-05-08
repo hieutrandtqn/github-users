@@ -35,9 +35,10 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         tableView.dataSource = self
         
         viewModel = UserViewModel()
-        viewModel.getUserData(page: 0)
+        viewModel.getUserData(since: 0)
+        //Binding with view model
         viewModel.users.bind { [weak self] user in
-            self?.userData = user!
+            self?.userData.append(contentsOf:user!)
             self?.tableView.reloadData()
         }
     }
@@ -59,9 +60,10 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
             cell = tableView.dequeueReusableCell(withIdentifier: "TableCell") as? TableViewCell
         }
         
-        //Set data to UI
+        //Update data to UI
         cell.lblUsername.text = userData[indexPath.row].login
         cell.lblRole.text = userData[indexPath.row].type
+        cell.updateRoleFrame()
         cell.imgAvatar.load.request(with: userData[indexPath.row].avatar_url!, onCompletion: { (image, error, operation) in
             if (error == nil) {
                 DispatchQueue.main.async {
@@ -79,5 +81,11 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         detailVC.userName = userData[indexPath.row].login
         self.navigationController?.present(detailVC, animated: true)
         
+    }
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if (indexPath.row == userData.count - 1) {
+            let since = userData.last!.id!
+            viewModel.getUserData(since: since)
+        }
     }
 }
